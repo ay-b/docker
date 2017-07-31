@@ -1,0 +1,14 @@
+FROM php:fpm-alpine
+
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.4/main" > /etc/apk/repositories &&\
+    echo "http://dl-cdn.alpinelinux.org/alpine/v3.4/community" >> /etc/apk/repositories &&\
+    apk add --update --no-cache libpng-dev &&\
+    echo "http://dl-3.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories &&\
+    apk add --update --no-cache gcc &&\
+    docker-php-ext-install zip gd
+
+WORKDIR /usr/share/nginx/html
+
+EXPOSE 9000
+
+CMD ["php-fpm"]

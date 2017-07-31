@@ -1,0 +1,31 @@
+version: '3.2'
+services: 
+  nginx:
+    image: nginx:alpine
+    depends_on: 
+      - fpm
+    environment:
+      DOMAIN_NAME: "localhost"
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - fpm
+    volumes:
+      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf   
+      - ./nginx/conf.d:/etc/nginx/conf.d 
+      - ./nginx/logs:/var/log/nginx
+      - ./html:/usr/share/nginx/html
+      - ./sock:/var/run
+    restart: always
+
+  fpm:
+    build: 
+      context: ./
+      dockerfile: Dockerfile.fpm
+    volumes:
+      - ./sock:/var/run
+#      - ./html:/var/www/html
+      - ./html:/usr/share/nginx/html
+      - ./nginx/logs:/var/log/php-fpm
+    restart: always
